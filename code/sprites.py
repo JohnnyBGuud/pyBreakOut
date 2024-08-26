@@ -5,12 +5,6 @@ Breakout by JohnnyBGuud
 
 from settings import *
 
-class CollisionSprites(pygame.sprite.Sprite):
-    def __init__(self, pos, size, groups):
-        super().__init__(groups)
-        self.image = pygame.Surface(size)
-        self.image.fill('blue')
-        self.rect = self.image.get_frect(center = pos)
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, pos, size, groups, collision_sprites):
@@ -25,20 +19,31 @@ class Ball(pygame.sprite.Sprite):
         self.collision_sprites = collision_sprites
 
     def move(self, dt):
+        if self.rect.right > WINDOW_WIDTH:
+            self.direction.x *= -1
+            self.rect.right = WINDOW_WIDTH
+        if self.rect.left < 0:
+            self.direction.x *= -1
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.direction.y *= -1
+            self.rect.top = 0
+        if self.rect.y > WINDOW_HEIGHT:
+            self.kill()
+            pygame.quit()
         self.rect.x += self.direction.x * self.speed * dt
         self.rect.y += self.direction.y * self.speed * dt
-        if self.rect.x >= WINDOW_WIDTH or self.rect.x <= 0:
-            self.direction.x *= -1
-        if self.rect.y <= 0:
-            self.direction.y *= -1
-        if self.rect.y >= WINDOW_HEIGHT:
-            self.kill()
-        self.bounce()
 
-    def bounce(self):
-        for sprite in self.collision_sprites:
-            if sprite.rect.colliderect(self.rect):
-                self.direction.y *= -1
+    def bounce(self, ballposx, paddleposx, paddleposy):
+        self.direction.y *= -1
+        self.direction.x = (ballposx - paddleposx)/100
 
     def update(self, dt):
         self.move(dt)
+
+class Brick(pygame.sprite.Sprite):
+    def __init__(self, color, size, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.Surface(size)
+        self.image.fill(color)
+        self.rect = self.image.get_frect(center=(pos))

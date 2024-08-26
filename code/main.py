@@ -4,8 +4,9 @@ Breakout by JohnnyBGuud
 """
 
 from settings import *
-from player import Player
+from player import Paddle
 from sprites import *
+from random import random
 
 class Game:
     def __init__(self):
@@ -21,10 +22,28 @@ class Game:
         self.collision_sprites = pygame.sprite.Group()
 
         # sprites
-        self.player = Player((WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), (self.all_sprites, self.collision_sprites))
+        self.paddle = Paddle((WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), (self.all_sprites))
         self.ball = Ball((WINDOW_WIDTH/2, WINDOW_HEIGHT - 30), (10, 10), self.all_sprites, self.collision_sprites)
-        self.ball.direction.x = 1
+        self.ball.direction.x = random()
         self.ball.direction.y = -1
+        for i in range(10):
+            width = WINDOW_WIDTH/10 - WINDOW_WIDTH/50
+            height = 40
+            dist = WINDOW_WIDTH/10
+            self.brick = Brick('red', (width, height), (dist / 2 + i * dist, height * 0.5),
+                               (self.all_sprites, self.collision_sprites))
+            self.brick = Brick('orange', (width, height), (dist / 2 + i * dist, height * 2),
+                               (self.all_sprites, self.collision_sprites))
+            self.brick = Brick('yellow', (width, height), (dist / 2 + i * dist, height * 3.5),
+                               (self.all_sprites, self.collision_sprites))
+            self.brick = Brick('green', (width, height), (dist / 2 + i * dist, height * 5),
+                               (self.all_sprites, self.collision_sprites))
+            self.brick = Brick('blue', (width, height), (dist / 2 + i * dist, height * 6.5),
+                               (self.all_sprites, self.collision_sprites))
+            self.brick = Brick('purple', (width, height), (dist / 2 + i * dist, height * 8),
+                               (self.all_sprites, self.collision_sprites))
+
+
     def run(self):
         while self.running:
             # dt
@@ -37,6 +56,18 @@ class Game:
 
             # update
             self.all_sprites.update(dt)
+
+            # collision
+            if pygame.sprite.collide_rect(self.ball, self.paddle):
+                self.ball.bounce(self.ball.rect.centerx, self.paddle.rect.centerx, self.paddle.rect.top)
+
+            self.brick_collision_list = pygame.sprite.spritecollide(self.ball, self.collision_sprites, False)
+            for brick in self.brick_collision_list:
+                self.ball.bounce(self.ball.rect.centerx, brick.rect.centerx, brick.rect.bottom)
+                brick.kill()
+            # for sprite in self.collision_sprites:
+            #     if sprite.rect.colliderect(self.ball.rect):
+            #         self.ball.bounce(self.ball.rect.centerx, self. paddle.rect.centerx)
 
             # draw
             self.display_surf.fill((0, 0, 0))
