@@ -28,19 +28,19 @@ class Game:
         self.ball.direction.y = -1
         for i in range(10):
             width = WINDOW_WIDTH/10 - WINDOW_WIDTH/50
-            height = 40
+            height = 30
             dist = WINDOW_WIDTH/10
-            self.brick = Brick('red', (width, height), (dist / 2 + i * dist, height * 0.5),
+            self.brick = Brick('red', (width, height), (dist / 2 + i * dist, height * 0.5 + 10),
                                (self.all_sprites, self.collision_sprites))
-            self.brick = Brick('orange', (width, height), (dist / 2 + i * dist, height * 2),
+            self.brick = Brick('orange', (width, height), (dist / 2 + i * dist, height * 2 + 10),
                                (self.all_sprites, self.collision_sprites))
-            self.brick = Brick('yellow', (width, height), (dist / 2 + i * dist, height * 3.5),
+            self.brick = Brick('yellow', (width, height), (dist / 2 + i * dist, height * 3.5 + 10),
                                (self.all_sprites, self.collision_sprites))
-            self.brick = Brick('green', (width, height), (dist / 2 + i * dist, height * 5),
+            self.brick = Brick('green', (width, height), (dist / 2 + i * dist, height * 5 + 10),
                                (self.all_sprites, self.collision_sprites))
-            self.brick = Brick('blue', (width, height), (dist / 2 + i * dist, height * 6.5),
+            self.brick = Brick('blue', (width, height), (dist / 2 + i * dist, height * 6.5 + 10),
                                (self.all_sprites, self.collision_sprites))
-            self.brick = Brick('purple', (width, height), (dist / 2 + i * dist, height * 8),
+            self.brick = Brick('purple', (width, height), (dist / 2 + i * dist, height * 8 + 10),
                                (self.all_sprites, self.collision_sprites))
 
 
