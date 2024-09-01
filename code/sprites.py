@@ -4,7 +4,8 @@ Breakout by JohnnyBGuud
 """
 
 from settings import *
-
+pygame.font.init()
+font = pygame.font.Font(pygame.font.get_default_font(), 20)
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, pos, size, groups, collision_sprites):
@@ -36,8 +37,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x += self.direction.x * self.speed * dt
         self.rect.y += self.direction.y * self.speed * dt
 
-    def collision(self, brick_centery, brick_height):
-        self.speed += 1
+    def collision(self, brick_centery, brick_height, brick_centerx, brick_width):
+        # increase speed
         print(self.speed)
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.rect):
@@ -49,6 +50,7 @@ class Ball(pygame.sprite.Sprite):
                     self.direction.y *= -1
 
     def bounce(self, ballposx, paddleposx, paddleposy):
+        self.speed += 10
         self.direction.y *= -1
         self.rect.bottom = paddleposy
         self.direction.x = (ballposx - paddleposx)/100
