@@ -5,6 +5,7 @@ Breakout by JohnnyBGuud
 
 from settings import *
 from player import Paddle
+from player import Ball
 from sprites import *
 from random import random
 import colorsys
@@ -36,11 +37,17 @@ class Game:
             for j in range(6):
                 color = pygame.Color(0,0,0)
                 color.hsva = (j * 50, 100, 100, 100)
-                print(color)
                 Brick((color), (width, height), (dist / 2 + i * dist, height * (j * 1.5 + 0.5) + 10),
                       (self.all_sprites, self.collision_sprites))
 
+        # score
+        self.score = {'player': 0}
+        self.font = pygame.font.Font(None, 30)
 
+    def display_score(self):
+        player_surf = self.font.render(str(f'SCORE: {self.score['player']}'), True, 'white')
+        player_rect = player_surf.get_rect(center = (WINDOW_WIDTH - 60, WINDOW_HEIGHT - 10))
+        self.display_surf.blit(player_surf, player_rect)
 
     def run(self):
         while self.running:
@@ -63,10 +70,12 @@ class Game:
             for brick in self.brick_collision_list:
                 self.ball.collision(brick.rect.centery, brick.rect.height, brick.rect.centerx, brick.rect.width)
                 brick.kill()
+                self.score['player'] += 1
 
             # draw
             self.display_surf.fill((0, 0, 0))
             self.all_sprites.draw(self.display_surf)
+            self.display_score()
             pygame.display.update()
 
         pygame.quit()
