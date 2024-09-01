@@ -16,6 +16,7 @@ class Game:
         pygame.display.set_caption("Breakout")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.score = 0
 
         # groups
         self.all_sprites = pygame.sprite.Group()
@@ -28,7 +29,7 @@ class Game:
         self.ball.direction.y = -1
         for i in range(10):
             width = WINDOW_WIDTH/10 - WINDOW_WIDTH/50
-            height = 30
+            height = 40
             dist = WINDOW_WIDTH/10
             self.brick = Brick('red', (width, height), (dist / 2 + i * dist, height * 0.5 + 10),
                                (self.all_sprites, self.collision_sprites))
@@ -63,11 +64,10 @@ class Game:
 
             self.brick_collision_list = pygame.sprite.spritecollide(self.ball, self.collision_sprites, False)
             for brick in self.brick_collision_list:
-                self.ball.bounce(self.ball.rect.centerx, brick.rect.centerx, brick.rect.bottom)
+                self.ball.collision(brick.rect.centery, brick.rect.height)
                 brick.kill()
-            # for sprite in self.collision_sprites:
-            #     if sprite.rect.colliderect(self.ball.rect):
-            #         self.ball.bounce(self.ball.rect.centerx, self. paddle.rect.centerx)
+                self.score += 10
+                print(self.score)
 
             # draw
             self.display_surf.fill((0, 0, 0))
