@@ -6,11 +6,11 @@ Breakout by JohnnyBGuud
 from settings import *
 
 class Paddle(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, groups):
         super().__init__(groups)
         self.image = pygame.Surface((200, 20))
         self.image.fill('white')
-        self.rect = self.image.get_frect(center = pos)
+        self.rect = self.image.get_frect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), )
 
         # movement
         self.direction = pygame.Vector2()
@@ -35,22 +35,29 @@ class Paddle(pygame.sprite.Sprite):
         if self.rect.top <= 0:
             self.rect.top = 0
 
+    def increase_speed(self):
+        self.speed_x += 10
+
     def update(self, dt):
         self.input()
         self.move(dt)
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, pos, size, groups, collision_sprites):
+    def __init__(self, groups, collision_sprites):
         super().__init__(groups)
-        self.image = pygame.Surface(size)
+        self.collision_sprites = collision_sprites
+        # image
+        self.image = pygame.Surface((10, 10))
         self.image.fill('yellow')
-        self.rect = self.image.get_frect(center=pos)
+
+        # rect
+        self.rect = self.image.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT - 30))
+        self.old_rect = self.rect.copy()
 
         # movement
         self.direction = pygame.Vector2()
         self.speed = 300
-        self.collision_sprites = collision_sprites
 
     def move(self, dt):
         if self.rect.right > WINDOW_WIDTH:
@@ -69,26 +76,44 @@ class Ball(pygame.sprite.Sprite):
             self.rect.bottom = WINDOW_HEIGHT
             self.direction.y *= -1
             # self.kill()
-            # pygame.quit()
+            # self.reset()
         self.rect.x += self.direction.x * self.speed * dt
         self.rect.y += self.direction.y * self.speed * dt
 
-    def collision(self, brick_centery, brick_height, brick_centerx, brick_width):
+    def reset(self):
+        self.speed = 300
+        self.direction.x = random()
+        self.direction.y = -1
+
+    def collision(self, brick):
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.rect):
-                # if collision is horizontal: change condition
-                if (brick_centery + (brick_height / 2 - 1)) > self.rect.centery > (
-                        brick_centery - (brick_height / 2 - 1)):
+                if self.rect.right > brick.rect.left >= self.old_rect.right:
+                    self.rect.right = brick.rect.left
                     self.direction.x *= -1
-                # if collision is vertical
-                else:
+                if self.rect.bottom > brick.rect.top >= self.old_rect.bottom:
+                    self.rect.bottom = brick.rect.top
+                    self.direction.y *= -1
+                if self.rect.left < brick.rect.right <= self.old_rect.left:
+                    self.rect.left = brick.rect.right
+                    self.direction.x *= -1
+                if self.rect.top < brick.rect.bottom <= self.old_rect.top:
+                    self.rect.top = brick.rect.bottom
                     self.direction.y *= -1
 
-    def bounce(self, ballposx, paddleposx, paddleposy):
+    def bounce(self, paddle):
         self.speed += 10
         self.direction.y *= -1
-        self.rect.bottom = paddleposy
-        self.direction.x = (ballposx - paddleposx) / 100
+        if self.rect.right > paddle.rect.left >= self.old_rect.right:
+            self.rect.right = paddle.rect.left
+        if self.rect.left < paddle.rect.right <= self.old_rect.left:
+            self.rect.left = paddle.rect.right
+        if self.rect.bottom > paddle.rect.top >= self.old_rect.bottom:
+            self.rect.bottom = paddle.rect.top
+        if self.rect.top < paddle.rect.top <= self.old_rect.bottom:
+            self.rect.top = paddle.rect.bottom
+        self.direction.x = (self.rect.centerx - paddle.rect.centerx) / 100
 
     def update(self, dt):
+        self.old_rect = self.rect.copy()
         self.move(dt)

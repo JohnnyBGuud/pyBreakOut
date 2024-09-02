@@ -24,19 +24,20 @@ class Game:
         self.collision_sprites = pygame.sprite.Group()
 
         # sprites
-        self.paddle = Paddle((WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), (self.all_sprites))
-        self.ball = Ball((WINDOW_WIDTH/2, WINDOW_HEIGHT - 30), (10, 10), self.all_sprites, self.collision_sprites)
+        self.paddle = Paddle(self.all_sprites)
+        self.ball = Ball(self.all_sprites, self.collision_sprites)
         self.ball.direction.x = random()
         self.ball.direction.y = -1
-        # brick columns:
+        # generating brick columns:
         for i in range(10):
             width = WINDOW_WIDTH/10 - WINDOW_WIDTH/50
-            height = 50
+            height = 30
             dist = WINDOW_WIDTH/10
+            rows = 12
             # brick rows:
-            for j in range(6):
+            for j in range(rows):
                 color = pygame.Color(0,0,0)
-                color.hsva = (j * 50, 100, 100, 100)
+                color.hsva = (j * 360/rows, 100, 100, 100)
                 Brick((color), (width, height), (dist / 2 + i * dist, height * (j * 1.5 + 0.5) + 10),
                       (self.all_sprites, self.collision_sprites))
 
@@ -64,11 +65,12 @@ class Game:
 
             # collision
             if pygame.sprite.collide_rect(self.ball, self.paddle):
-                self.ball.bounce(self.ball.rect.centerx, self.paddle.rect.centerx, self.paddle.rect.top)
+                self.ball.bounce(self.paddle)
+                self.paddle.increase_speed()
 
             self.brick_collision_list = pygame.sprite.spritecollide(self.ball, self.collision_sprites, False)
             for brick in self.brick_collision_list:
-                self.ball.collision(brick.rect.centery, brick.rect.height, brick.rect.centerx, brick.rect.width)
+                self.ball.collision(brick)
                 brick.kill()
                 self.score['player'] += 1
 
