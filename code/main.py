@@ -19,6 +19,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
+
         # groups
         self.all_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()

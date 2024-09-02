@@ -77,6 +77,7 @@ class Ball(pygame.sprite.Sprite):
             self.direction.y *= -1
             # self.kill()
             # self.reset()
+
         self.rect.x += self.direction.x * self.speed * dt
         self.rect.y += self.direction.y * self.speed * dt
 
