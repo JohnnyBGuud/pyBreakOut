@@ -5,12 +5,13 @@ Breakout by JohnnyBGuud
 
 from settings import *
 
+
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
         self.image = pygame.Surface((200, 20))
         self.image.fill('white')
-        self.rect = self.image.get_frect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), )
+        self.rect = self.image.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT - 10), )
 
         # movement
         self.direction = pygame.Vector2()

@@ -8,7 +8,7 @@ from player import Paddle
 from player import Ball
 from sprites import *
 from random import random
-import colorsys
+
 
 class Game:
     def __init__(self):
@@ -18,7 +18,6 @@ class Game:
         pygame.display.set_caption("Breakout")
         self.clock = pygame.time.Clock()
         self.running = True
-
 
         # groups
         self.all_sprites = pygame.sprite.Group()
@@ -37,9 +36,9 @@ class Game:
             rows = 12
             # brick rows:
             for j in range(rows):
-                color = pygame.Color(0,0,0)
+                color = pygame.Color(0, 0, 0)
                 color.hsva = (j * 360/rows, 100, 100, 100)
-                Brick((color), (width, height), (dist / 2 + i * dist, height * (j * 1.5 + 0.5) + 10),
+                Brick(color, (width, height), (dist / 2 + i * dist, height * (j * 1.5 + 0.5) + 10),
                       (self.all_sprites, self.collision_sprites))
 
         # score
@@ -48,7 +47,7 @@ class Game:
 
     def display_score(self):
         player_surf = self.font.render(str(f'SCORE: {self.score['player']}'), True, 'white')
-        player_rect = player_surf.get_rect(center = (WINDOW_WIDTH - 60, WINDOW_HEIGHT - 10))
+        player_rect = player_surf.get_rect(center=(WINDOW_WIDTH - 60, WINDOW_HEIGHT - 10))
         self.display_surf.blit(player_surf, player_rect)
 
     def run(self):
@@ -83,7 +82,7 @@ class Game:
 
         pygame.quit()
 
+
 if __name__ == '__main__':
     game = Game()
     game.run()
-
